@@ -399,6 +399,21 @@
               <FileType>1</FileType>
               <FilePath>..\HardwareDriver\src\Rocker.c</FilePath>
             </File>
+            <File>
+              <FileName>Key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HardwareDriver\src\Key.c</FilePath>
+            </File>
+            <File>
+              <FileName>OLED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HardwareDriver\src\OLED.c</FilePath>
+            </File>
+            <File>
+              <FileName>font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HardwareDriver\src\font.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

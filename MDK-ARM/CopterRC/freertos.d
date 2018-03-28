@@ -47,3 +47,4 @@ copterrc\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 copterrc\freertos.o: ..\task\inc\task_Control.h
 copterrc\freertos.o: ../Inc/externParam.h
 copterrc\freertos.o: ..\HardwareDriver\inc\Rocker.h
+copterrc\freertos.o: ..\HardwareDriver\inc\OLED.h

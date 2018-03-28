@@ -56,6 +56,7 @@
 #include "task_Control.h"
 #include "externParam.h"
 #include "Rocker.h"
+#include "OLED.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -137,6 +138,8 @@ void StartDefaultTask(void const * argument)
 	__HAL_UART_ENABLE(&huart1);
 	
 	Rocker_Init();
+	OLED_InitConfig();
+	OLED_DrawF6x8String(0, 0, "www");
 	
 	if(!LC12S_Init(0x12))
 	{
