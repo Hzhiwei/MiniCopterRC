@@ -1,0 +1,13 @@
+copterrc\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/port.c
+copterrc\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
+copterrc\port.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+copterrc\port.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+copterrc\port.o: ../Inc/FreeRTOSConfig.h
+copterrc\port.o: ../Inc/main.h
+copterrc\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
+copterrc\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
+copterrc\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
+copterrc\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h
+copterrc\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+copterrc\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+copterrc\port.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
