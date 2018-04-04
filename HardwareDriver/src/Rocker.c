@@ -2,9 +2,9 @@
 #include "externParam.h"
 
 /*
-    1           3
+    0           2
     |           |
-  --+--2      --+--4
+  --+--1      --+--3
     |           |
                     1
                     2
@@ -29,6 +29,27 @@ static uint32_t OffsetParam[4][3] =
 void Rocker_Init(void)
 {
 	HAL_ADC_Start_DMA(&hadc1, OriginData, 4);
+}
+
+
+void Rocker_GetOriginal(uint32_t data[4])
+{
+	data[0] = OriginData[0];
+	data[1] = OriginData[1];
+	data[2] = OriginData[2];
+	data[3] = OriginData[3];
+}
+
+
+void Rocker_SetOffset(uint32_t data[4][3])
+{
+	for(uint8_t i = 0; i < 4; ++i)
+	{
+		for(uint8_t j = 0; j < 3; ++j)
+		{
+			OffsetParam[i][j] = data[i][j];
+		}
+	}
 }
 
 

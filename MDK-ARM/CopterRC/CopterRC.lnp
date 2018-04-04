@@ -4,6 +4,7 @@
 "copterrc\rocker.o"
 "copterrc\key.o"
 "copterrc\oled.o"
+"copterrc\switch.o"
 "copterrc\font.o"
 "copterrc\task_control.o"
 "copterrc\stm32f1xx_hal_tim_ex.o"

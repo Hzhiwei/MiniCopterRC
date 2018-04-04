@@ -139,7 +139,6 @@ void StartDefaultTask(void const * argument)
 	
 	Rocker_Init();
 	OLED_InitConfig();
-	OLED_DrawF6x8String(0, 0, "www");
 	
 	if(!LC12S_Init(0x12))
 	{

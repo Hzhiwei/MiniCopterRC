@@ -12,18 +12,17 @@
 //将协议的标志位结合，与数据一起压缩后并用于传输的联合体
 typedef struct 
 {
-	uint8_t head[2];
 	uint8_t mode;
 	uint8_t power;
 	int8_t LR;
 	int8_t FB;
+	int8_t SP;
 	uint8_t adjust;
 	uint8_t sum;
-	uint8_t end[2];
 }protocolTransmit;
 
 
-static protocolTransmit SendBuffer;
+static uint8_t SendBuffer[2 * sizeof(protocolTransmit) + 4];
 static uint8_t ReceiveBuffer[32];
 
 //LC12S初始化参数
@@ -75,8 +74,27 @@ uint8_t LC12S_Init(uint16_t Net)
 
 void LC12S_Send(const protocolDetail *pd)
 {
-	LC12S_PT2PD(pd, &SendBuffer);
-	HAL_UART_Transmit_IT(&huart1, (uint8_t *)(&SendBuffer), sizeof(protocolTransmit));
+	protocolTransmit pt;
+	LC12S_PT2PD(pd, &pt);
+	
+	uint8_t lendgth = 0;
+	SendBuffer[lendgth++] = 0xFF;
+	SendBuffer[lendgth++] = 0x01;
+	for(uint8_t i = 0; i < sizeof(protocolTransmit); ++i)
+	{
+		if(*((uint8_t *)(&pt) + i) == 0xFF)
+		{
+			SendBuffer[lendgth++] = 0xFF;
+			SendBuffer[lendgth++] = 0x00;
+		}
+		else
+		{
+			SendBuffer[lendgth++] = *((uint8_t *)(&pt) + i);
+		}
+	}
+	SendBuffer[lendgth++] = 0xFF;
+	SendBuffer[lendgth++] = 0x02;
+	HAL_UART_Transmit_IT(&huart1, (uint8_t *)(&SendBuffer), lendgth);
 }
 
 
@@ -85,8 +103,6 @@ static void LC12S_PT2PD(const protocolDetail *pd, protocolTransmit *pt)
 {
 	memset(pt, 0, sizeof(protocolTransmit));
 	
-	pt->head[0] = 0xFF;
-	pt->head[1] = 0x01;
 	if(pd->locked)
 	{
 		pt->mode |= 0x80;
@@ -98,6 +114,7 @@ static void LC12S_PT2PD(const protocolDetail *pd, protocolTransmit *pt)
 	pt->power = pd->power;
 	pt->LR = pd->LR;
 	pt->FB = pd->FB;
+	pt->SP = pd->SP;
 	pt->adjust = pd->adjust;
 	uint8_t sum = 0;
 	for(uint8_t i = 0; i < sizeof(protocolTransmit) - 1; ++i)
@@ -105,8 +122,6 @@ static void LC12S_PT2PD(const protocolDetail *pd, protocolTransmit *pt)
 		sum += *((uint8_t *)pt + i);
 	}
 	pt->sum = sum;
-	pt->end[0] = 0xFF;
-	pt->end[1] = 0x02;
 }
 
 
