@@ -19,26 +19,26 @@ typedef struct
 	int8_t SP;
 	uint8_t adjust;
 	uint8_t sum;
-}protocolTransmit;
+}SendProtocolTransmit;
 
 
-static uint8_t SendBuffer[2 * sizeof(protocolTransmit) + 4];
+static uint8_t SendBuffer[2 * sizeof(SendProtocolTransmit) + 4];
 static uint8_t ReceiveBuffer[32];
 
 //LC12S初始化参数
 static uint8_t LS12SParam[18] = {0xAA,0x5A,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x04,0x00,0x00,0x00,0x00,0x00,0x12,0x00,0x00};
 
 
-static void LC12S_PT2PD(const protocolDetail *pd, protocolTransmit *pt);
+static void LC12S_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt);
 
 	
 //LC12S初始化
 uint8_t LC12S_Init(uint16_t Net)
 {
 	LS12S_SET;
-	osDelay(30);
+	osDelay(100);
 	LS12S_RESET;  
-	osDelay(5);
+	osDelay(500);
 	
 	LS12SParam[4] = Net >> 8;
 	LS12SParam[5] = Net;
@@ -47,6 +47,7 @@ uint8_t LC12S_Init(uint16_t Net)
 	{
 		LS12SParam[17] += LS12SParam[i];
 	}
+	huart1.Instance->SR = ~((uint16_t)0x0020);
 	if(HAL_UART_Transmit(&huart1, LS12SParam, 18, 100) != HAL_OK)
 	{
 		return 0;
@@ -56,12 +57,12 @@ uint8_t LC12S_Init(uint16_t Net)
 		return 0;
 	}
 	
-	uint8_t sun = 0;
+	uint8_t sum = 0;
 	for(uint8_t i = 0; i < 17; ++i)
 	{
-		sun += ReceiveBuffer[i];
+		sum += ReceiveBuffer[i];
 	}
-	if(sun != ReceiveBuffer[17])
+	if(sum != ReceiveBuffer[17])
 	{
 		return 0;
 	}
@@ -72,15 +73,15 @@ uint8_t LC12S_Init(uint16_t Net)
 }
 
 
-void LC12S_Send(const protocolDetail *pd)
+void LC12S_Send(const SendProtocolDetail *pd)
 {
-	protocolTransmit pt;
+	SendProtocolTransmit pt;
 	LC12S_PT2PD(pd, &pt);
 	
 	uint8_t lendgth = 0;
 	SendBuffer[lendgth++] = 0xFF;
 	SendBuffer[lendgth++] = 0x01;
-	for(uint8_t i = 0; i < sizeof(protocolTransmit); ++i)
+	for(uint8_t i = 0; i < sizeof(SendProtocolTransmit); ++i)
 	{
 		if(*((uint8_t *)(&pt) + i) == 0xFF)
 		{
@@ -98,10 +99,10 @@ void LC12S_Send(const protocolDetail *pd)
 }
 
 
-//将protocolDetail转化为protocolTransmit
-static void LC12S_PT2PD(const protocolDetail *pd, protocolTransmit *pt)
+//将SendProtocolDetail转化为SendProtocolTransmit
+static void LC12S_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt)
 {
-	memset(pt, 0, sizeof(protocolTransmit));
+	memset(pt, 0, sizeof(SendProtocolTransmit));
 	
 	if(pd->locked)
 	{
@@ -117,7 +118,7 @@ static void LC12S_PT2PD(const protocolDetail *pd, protocolTransmit *pt)
 	pt->SP = pd->SP;
 	pt->adjust = pd->adjust;
 	uint8_t sum = 0;
-	for(uint8_t i = 0; i < sizeof(protocolTransmit) - 1; ++i)
+	for(uint8_t i = 0; i < sizeof(SendProtocolTransmit) - 1; ++i)
 	{
 		sum += *((uint8_t *)pt + i);
 	}

@@ -163,7 +163,7 @@ void OLED_DrawF6x8String(uint8_t x, uint8_t y, char *chr)
 	while(*chr != 0)
 	{
 		OLED_DrawF6x8Char(x, y, *chr++);
-		if(x > 110)
+		if(x > 122)
 		{
 			x = 0;
 			y += 9;
@@ -173,7 +173,7 @@ void OLED_DrawF6x8String(uint8_t x, uint8_t y, char *chr)
 			x += 7;
 		}
 		
-		if(y > 50)
+		if(y > 56)
 		{
 			break;
 		}

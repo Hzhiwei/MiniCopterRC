@@ -415,6 +415,11 @@
               <FilePath>..\HardwareDriver\src\Switch.c</FilePath>
             </File>
             <File>
+              <FileName>Flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HardwareDriver\src\Flash.c</FilePath>
+            </File>
+            <File>
               <FileName>font.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HardwareDriver\src\font.c</FilePath>

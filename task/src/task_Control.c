@@ -5,6 +5,7 @@
 #include "Key.h"
 #include "OLED.h"
 #include "Switch.h"
+#include "Flash.h"
 
 #include <stdio.h>
 
@@ -28,15 +29,18 @@ static void Status_LeaveRcokerAdjust(void);
 
 
 
-static protocolDetail pd;
+static SendProtocolDetail pd;
 static KeyStatusType KeyStatus;
-static int8_t RockerData[4];
+static int16_t RockerData[4];
 static uint8_t MotorLocker = 1;
 
 
 void task_Control(const void *Parameters)
 {
 	TickType_t tick;
+	
+	uint32_t Offset[4][3] = {0};
+
 	
 	while(1)
 	{
@@ -188,10 +192,98 @@ static void Status_LeaveCopterAdjust(void)
 
 static void Status_RcokerAdjust(uint8_t frist)
 {
+	static uint32_t Param[4][3];
+	static uint8_t Flag = 0;
+	
 	if(frist)
 	{
 		OLED_ClearGRAM(0);
 		OLED_DrawF6x8String(0, 0, "rockerAdjust");
+		OLED_DrawF6x8String(0, 11, "0S:");
+		OLED_DrawF6x8String(0, 20, "0M:");
+		OLED_DrawF6x8String(0, 29, "0L:");
+		OLED_DrawF6x8String(0, 38, "1S:");
+		OLED_DrawF6x8String(0, 47, "1M:");
+		OLED_DrawF6x8String(0, 56, "1L:");
+		OLED_DrawF6x8String(60, 11, "2S:");
+		OLED_DrawF6x8String(60, 20, "2M:");
+		OLED_DrawF6x8String(60, 29, "2L:");
+		OLED_DrawF6x8String(60, 38, "3S:");
+		OLED_DrawF6x8String(60, 47, "3M:");
+		OLED_DrawF6x8String(60, 56, "3L:");
+		
+		for(uint8_t i = 0; i < 4; ++i)
+		{
+			for(uint8_t j = 0; j < 3; ++j)
+			{
+				Param[i][j] = 2048;
+			}
+		}
+		Flag = 0;
+	}
+	
+	uint32_t data[4];
+	char temp[8];
+	Rocker_GetOriginal(data);
+	
+	if(Flag == 0)
+	{
+		for(uint8_t i = 0; i < 4; ++i)
+		{
+			Param[i][0] = Param[i][0] > data[i] ? data[i] : Param[i][0];
+			Param[i][2] = Param[i][2] < data[i] ? data[i] : Param[i][2];
+			Param[i][1] = data[i];
+		}
+		
+		OLED_DrawF6x8String(90, 0, "...");
+		
+		for(uint8_t i = 0; i < 3; ++i)
+		{
+			sprintf(temp, "%d  ", Param[1][i]);
+			OLED_DrawF6x8String(19, 11 + 9 * i, "    ");
+			OLED_DrawF6x8String(19, 11 + 9 * i, temp);
+		}
+		for(uint8_t i = 0; i < 3; ++i)
+		{
+			sprintf(temp, "%d  ", Param[0][i]);
+			OLED_DrawF6x8String(19, 38 + 9 * i, "    ");
+			OLED_DrawF6x8String(19, 38 + 9 * i, temp);
+		}
+		for(uint8_t i = 0; i < 3; ++i)
+		{
+			sprintf(temp, "%d  ", Param[3][i]);
+			OLED_DrawF6x8String(79, 11 + 9 * i, "    ");
+			OLED_DrawF6x8String(79, 11 + 9 * i, temp);
+		}
+		for(uint8_t i = 0; i < 3; ++i)
+		{
+			sprintf(temp, "%d  ", Param[2][i]);
+			OLED_DrawF6x8String(79, 38 + 9 * i, "    ");
+			OLED_DrawF6x8String(79, 38 + 9 * i, temp);
+		}
+		
+		if(KeyStatus.trigger[5] == 1)
+		{
+			Flash_Write_Rocker(Param);
+			Rocker_SetOffset(Param);
+			Flag = 1;
+		}
+	}
+	else
+	{
+		OLED_DrawF6x8String(90, 0, "OK ");
+	}
+	
+	if(KeyStatus.trigger[6] == 1)
+	{
+		for(uint8_t i = 0; i < 4; ++i)
+		{
+			for(uint8_t j = 0; j < 3; ++j)
+			{
+				Param[i][j] = 2048;
+			}
+		}
+		Flag = 0;
 	}
 }
 static void Status_LeaveRcokerAdjust(void)

@@ -64,11 +64,11 @@ typedef struct
 	5£∫–¥»ÎFlash
 	*/
 	int8_t adjust;			
-}protocolDetail;
+}SendProtocolDetail;
 
 
 uint8_t LC12S_Init(uint16_t Net);
-void LC12S_Send(const protocolDetail *pd);
+void LC12S_Send(const SendProtocolDetail *pd);
 
 
 #endif

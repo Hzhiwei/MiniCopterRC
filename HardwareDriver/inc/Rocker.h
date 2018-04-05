@@ -6,7 +6,7 @@
 
 
 void Rocker_Init(void);
-void Rocker_GetData(int8_t data[4]);
+void Rocker_GetData(int16_t data[4]);
 void Rocker_GetOriginal(uint32_t data[4]);
 void Rocker_SetOffset(uint32_t data[4][3]);
 

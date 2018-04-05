@@ -49,3 +49,4 @@ copterrc\task_control.o: ..\HardwareDriver\inc\LC12S.h
 copterrc\task_control.o: ..\HardwareDriver\inc\Key.h
 copterrc\task_control.o: ..\HardwareDriver\inc\OLED.h
 copterrc\task_control.o: ..\HardwareDriver\inc\Switch.h
+copterrc\task_control.o: ..\HardwareDriver\inc\Flash.h

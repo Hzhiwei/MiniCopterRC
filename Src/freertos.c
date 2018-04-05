@@ -140,10 +140,15 @@ void StartDefaultTask(void const * argument)
 	Rocker_Init();
 	OLED_InitConfig();
 	
-	if(!LC12S_Init(0x12))
+//	if(!LC12S_Init(0x12))
+//	{
+//		failFlag = 1;
+//		goto InitFail;
+//	}
+	
+	while(!LC12S_Init(0x12))
 	{
-		failFlag = 1;
-		goto InitFail;
+		osDelay(100);
 	}
 	
 	

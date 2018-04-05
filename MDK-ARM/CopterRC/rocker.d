@@ -29,4 +29,5 @@ copterrc\rocker.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 copterrc\rocker.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 copterrc\rocker.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 copterrc\rocker.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
+copterrc\rocker.o: ..\HardwareDriver\inc\Flash.h
 copterrc\rocker.o: ../Inc/externParam.h
