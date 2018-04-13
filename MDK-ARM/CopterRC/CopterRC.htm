@@ -3,7 +3,7 @@
 <title>Static Call Graph - [CopterRC\CopterRC.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image CopterRC\CopterRC.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Thu Apr 05 20:03:46 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Wed Apr 11 19:34:31 2018
 <BR><P>
 <H3>Maximum Stack Usage =        264 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -885,7 +885,8 @@ Global Symbols
 <P><STRONG><a name="[a6]"></a>OLED_DrawF6x8Char</STRONG> (Thumb, 234 bytes, Stack size 24 bytes, oled.o(i.OLED_DrawF6x8Char))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = OLED_DrawF6x8Char
 </UL>
-<BR>[Called By]<UL><LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OLED_DrawF6x8String
+<BR>[Called By]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Status_Update
+<LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OLED_DrawF6x8String
 </UL>
 
 <P><STRONG><a name="[bb]"></a>OLED_DrawF6x8Pic</STRONG> (Thumb, 232 bytes, Stack size 24 bytes, oled.o(i.OLED_DrawF6x8Pic))
@@ -1109,7 +1110,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvInitialiseNewTask
 </UL>
 
-<P><STRONG><a name="[40]"></a>task_Control</STRONG> (Thumb, 48 bytes, Stack size 56 bytes, task_control.o(i.task_Control))
+<P><STRONG><a name="[40]"></a>task_Control</STRONG> (Thumb, 54 bytes, Stack size 56 bytes, task_control.o(i.task_Control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264<LI>Call Chain = task_Control &rArr; Status_Update &rArr; Status_RcokerAdjust &rArr; Flash_Write_Rocker &rArr; Flash_Write &rArr; HAL_FLASH_Program &rArr; FLASH_WaitForLastOperation
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskGetTickCount
@@ -1425,7 +1426,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Status_Update
 </UL>
 
-<P><STRONG><a name="[b5]"></a>Status_Update</STRONG> (Thumb, 242 bytes, Stack size 8 bytes, task_control.o(i.Status_Update))
+<P><STRONG><a name="[b5]"></a>Status_Update</STRONG> (Thumb, 340 bytes, Stack size 8 bytes, task_control.o(i.Status_Update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = Status_Update &rArr; Status_RcokerAdjust &rArr; Flash_Write_Rocker &rArr; Flash_Write &rArr; HAL_FLASH_Program &rArr; FLASH_WaitForLastOperation
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskGetTickCount
@@ -1438,6 +1439,7 @@ Local Symbols
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Switch_Get
 <LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OLED_RefreshGRAM
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OLED_DrawF6x8Pic
+<LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OLED_DrawF6x8Char
 </UL>
 <BR>[Called By]<UL><LI><a href="#[40]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;task_Control
 </UL>

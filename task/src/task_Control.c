@@ -6,6 +6,7 @@
 #include "OLED.h"
 #include "Switch.h"
 #include "Flash.h"
+#include "externParam.h"
 
 #include <stdio.h>
 
@@ -33,6 +34,7 @@ static SendProtocolDetail pd;
 static KeyStatusType KeyStatus;
 static int16_t RockerData[4];
 static uint8_t MotorLocker = 1;
+static uint8_t SendLocker = 1;
 
 
 void task_Control(const void *Parameters)
@@ -48,7 +50,11 @@ void task_Control(const void *Parameters)
 		Key_Update(&KeyStatus);
 		Rocker_GetData(RockerData);
 		Status_Update();
-		SendData();
+		if(!SendLocker)
+		{
+			SendData();
+		}
+		
 		
 		vTaskDelayUntil(&tick, 20);
 	}
@@ -61,6 +67,8 @@ static void Status_Update(void)
 	static StatusMachineType currentStatus = Status_detail;
 	
 	static TickType_t pushUnlockTick = 0;
+	static TickType_t pushSendTick = 0;
+	static uint8_t sendLockerChanged;
 	
 	//¼Ó½âËø
 	if(Switch_Get(0))
@@ -74,12 +82,26 @@ static void Status_Update(void)
 			pushUnlockTick = xTaskGetTickCount();
 		}
 		
-		if((!KeyStatus.pushed[7]) && (pushUnlockTick + 2000 <= xTaskGetTickCount()))
+		if((!KeyStatus.pushed[7]) && (pushUnlockTick + 1000 <= xTaskGetTickCount()))
 		{
 			if(RockerData[0] <= 5)
 			{
 				MotorLocker = 0;
 			}
+		}
+	}
+	
+	if(KeyStatus.trigger[6])
+	{
+		pushSendTick = xTaskGetTickCount();
+		sendLockerChanged = 0;
+	}
+	if((!KeyStatus.pushed[6]) && (pushSendTick + 2000 <= xTaskGetTickCount()))
+	{
+		if(!sendLockerChanged)
+		{
+			sendLockerChanged = 1;
+			SendLocker = !SendLocker;
 		}
 	}
 	
@@ -127,6 +149,16 @@ static void Status_Update(void)
 	else
 	{
 		OLED_DrawF6x8Pic(118, 0, 1);
+	}
+	
+	
+	if(!SendLocker)
+	{
+		OLED_DrawF6x8Pic(110, 0, 2);
+	}
+	else
+	{
+		OLED_DrawF6x8Char(110, 0, ' ');
 	}
 	
 	//»º³åÏÔÊ¾
