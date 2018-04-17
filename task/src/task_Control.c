@@ -30,11 +30,18 @@ static void Status_LeaveRcokerAdjust(void);
 
 
 
-static SendProtocolDetail pd;
 static KeyStatusType KeyStatus;
 static int16_t RockerData[4];
 static uint8_t MotorLocker = 1;
 static uint8_t SendLocker = 1;
+
+static SendProtocolDetail spd;
+static ReceiveProtocolDetail rpd = 
+	{
+		.mode = 0,
+		.LRoffset = 1,
+		.FBoffset = 2
+	};
 
 
 void task_Control(const void *Parameters)
@@ -43,6 +50,7 @@ void task_Control(const void *Parameters)
 	
 	uint32_t Offset[4][3] = {0};
 
+	Bluetooth_Start();
 	
 	while(1)
 	{
@@ -50,6 +58,9 @@ void task_Control(const void *Parameters)
 		Key_Update(&KeyStatus);
 		Rocker_GetData(RockerData);
 		Status_Update();
+		
+		Bluetooth_ReceiveAnalyzeAndGetData(&rpd);
+		
 		if(!SendLocker)
 		{
 			SendData();
@@ -168,14 +179,14 @@ static void Status_Update(void)
 
 static void SendData(void)
 {
-	pd.adjust = 0;
-	pd.FB = RockerData[2];
-	pd.headMode = 1;
-	pd.locked = MotorLocker;
-	pd.LR = RockerData[3];
-	pd.power = RockerData[0];
-	pd.SP = RockerData[1];
-	Bluetooth_Send(&pd);
+	spd.adjust = 0;
+	spd.FB = RockerData[2];
+	spd.headMode = 1;
+	spd.locked = MotorLocker;
+	spd.LR = RockerData[3];
+	spd.power = RockerData[0];
+	spd.SP = RockerData[1];
+	Bluetooth_Send(&spd);
 }
 
 
