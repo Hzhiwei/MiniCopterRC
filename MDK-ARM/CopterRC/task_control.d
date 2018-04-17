@@ -45,7 +45,7 @@ copterrc\task_control.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queu
 copterrc\task_control.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 copterrc\task_control.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 copterrc\task_control.o: ..\HardwareDriver\inc\Rocker.h
-copterrc\task_control.o: ..\HardwareDriver\inc\LC12S.h
+copterrc\task_control.o: ..\HardwareDriver\inc\Bluetooth.h
 copterrc\task_control.o: ..\HardwareDriver\inc\Key.h
 copterrc\task_control.o: ..\HardwareDriver\inc\OLED.h
 copterrc\task_control.o: ..\HardwareDriver\inc\Switch.h

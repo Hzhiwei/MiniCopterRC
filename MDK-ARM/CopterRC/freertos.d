@@ -16,7 +16,7 @@ copterrc\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
 copterrc\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 copterrc\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 copterrc\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
-copterrc\freertos.o: ..\HardwareDriver\inc\LC12S.h
+copterrc\freertos.o: ..\HardwareDriver\inc\Bluetooth.h
 copterrc\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 copterrc\freertos.o: ../Inc/stm32f1xx_hal_conf.h
 copterrc\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h

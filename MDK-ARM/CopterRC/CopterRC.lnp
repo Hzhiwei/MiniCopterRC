@@ -1,11 +1,11 @@
 --cpu Cortex-M3
 "copterrc\startup_stm32f103xb.o"
-"copterrc\lc12s.o"
 "copterrc\rocker.o"
 "copterrc\key.o"
 "copterrc\oled.o"
 "copterrc\switch.o"
 "copterrc\flash.o"
+"copterrc\bluetooth.o"
 "copterrc\font.o"
 "copterrc\task_control.o"
 "copterrc\stm32f1xx_hal_tim_ex.o"

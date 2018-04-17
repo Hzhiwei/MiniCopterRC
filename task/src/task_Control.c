@@ -1,7 +1,7 @@
 #include "task_Control.h"
 #include "cmsis_os.h"
 #include "Rocker.h"
-#include "LC12S.h"
+#include "Bluetooth.h"
 #include "Key.h"
 #include "OLED.h"
 #include "Switch.h"
@@ -56,7 +56,7 @@ void task_Control(const void *Parameters)
 		}
 		
 		
-		vTaskDelayUntil(&tick, 20);
+		vTaskDelayUntil(&tick, 50);
 	}
 }
 
@@ -168,14 +168,14 @@ static void Status_Update(void)
 
 static void SendData(void)
 {
-	pd.adjust = 1;
+	pd.adjust = 0;
 	pd.FB = RockerData[2];
 	pd.headMode = 1;
 	pd.locked = MotorLocker;
 	pd.LR = RockerData[3];
 	pd.power = RockerData[0];
 	pd.SP = RockerData[1];
-	LC12S_Send(&pd);
+	Bluetooth_Send(&pd);
 }
 
 

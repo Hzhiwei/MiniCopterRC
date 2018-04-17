@@ -52,7 +52,7 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */     
-#include "LC12S.h"
+#include "Bluetooth.h"
 #include "task_Control.h"
 #include "externParam.h"
 #include "Rocker.h"
@@ -139,17 +139,6 @@ void StartDefaultTask(void const * argument)
 	
 	Rocker_Init();
 	OLED_InitConfig();
-	
-//	if(!LC12S_Init(0x12))
-//	{
-//		failFlag = 1;
-//		goto InitFail;
-//	}
-	
-	while(!LC12S_Init(0x12))
-	{
-		osDelay(100);
-	}
 	
 	
 	InitFail:
