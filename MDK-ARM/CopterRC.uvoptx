@@ -118,7 +118,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>窧?P魿w窧?</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -183,7 +182,7 @@
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
-          <ItemText>rpd</ItemText>
+          <ItemText>rpd,0x0A</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
