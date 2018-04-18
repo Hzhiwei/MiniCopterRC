@@ -250,7 +250,7 @@ uint8_t Bluetooth_ReceiveAnalyze(void)
 
 uint8_t Bluetooth_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd)
 {
-	if(Bluetooth_ReceiveAnalyze())
+	if(!Bluetooth_ReceiveAnalyze())
 	{
 		*pd = currentStatus;
 		return 0;

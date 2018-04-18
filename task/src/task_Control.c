@@ -11,6 +11,9 @@
 #include <stdio.h>
 
 
+
+#define LOSTSTOP	20
+
 typedef enum 
 {
 	Status_detail,
@@ -33,7 +36,8 @@ static void Status_LeaveRcokerAdjust(void);
 static KeyStatusType KeyStatus;
 static int16_t RockerData[4];
 static uint8_t MotorLocker = 1;
-static uint8_t SendLocker = 1;
+static uint8_t Linking = 0;
+static uint8_t EulerAdjustFlag = 0;
 
 static SendProtocolDetail spd;
 static ReceiveProtocolDetail rpd = 
@@ -47,6 +51,7 @@ static ReceiveProtocolDetail rpd =
 void task_Control(const void *Parameters)
 {
 	TickType_t tick;
+	uint16_t lostCounter = LOSTSTOP;
 	
 	uint32_t Offset[4][3] = {0};
 
@@ -58,12 +63,26 @@ void task_Control(const void *Parameters)
 		Key_Update(&KeyStatus);
 		Rocker_GetData(RockerData);
 		Status_Update();
+		SendData();
 		
-		Bluetooth_ReceiveAnalyzeAndGetData(&rpd);
-		
-		if(!SendLocker)
+		//分析无线数据
+		if(!Bluetooth_ReceiveAnalyzeAndGetData(&rpd))
 		{
-			SendData();
+			lostCounter = 0;
+		}
+		else if(lostCounter < LOSTSTOP)
+		{
+			++lostCounter;
+		}
+		
+		//根据无线帧率判断连接状态
+		if(lostCounter >= LOSTSTOP)
+		{
+			Linking = 0;
+		}
+		else
+		{
+			Linking = 1;
 		}
 		
 		
@@ -79,7 +98,8 @@ static void Status_Update(void)
 	
 	static TickType_t pushUnlockTick = 0;
 	static TickType_t pushSendTick = 0;
-	static uint8_t sendLockerChanged;
+	
+	EulerAdjustFlag = 0;
 	
 	//加解锁
 	if(Switch_Get(0))
@@ -99,20 +119,6 @@ static void Status_Update(void)
 			{
 				MotorLocker = 0;
 			}
-		}
-	}
-	
-	if(KeyStatus.trigger[6])
-	{
-		pushSendTick = xTaskGetTickCount();
-		sendLockerChanged = 0;
-	}
-	if((!KeyStatus.pushed[6]) && (pushSendTick + 2000 <= xTaskGetTickCount()))
-	{
-		if(!sendLockerChanged)
-		{
-			sendLockerChanged = 1;
-			SendLocker = !SendLocker;
 		}
 	}
 	
@@ -163,7 +169,7 @@ static void Status_Update(void)
 	}
 	
 	
-	if(!SendLocker)
+	if(Linking)
 	{
 		OLED_DrawF6x8Pic(110, 0, 2);
 	}
@@ -177,9 +183,10 @@ static void Status_Update(void)
 }
 
 
+
 static void SendData(void)
 {
-	spd.adjust = 0;
+	spd.adjust = EulerAdjustFlag;
 	spd.FB = RockerData[2];
 	spd.headMode = 1;
 	spd.locked = MotorLocker;
@@ -190,6 +197,7 @@ static void SendData(void)
 }
 
 
+//显示详情
 static void Status_Detail(uint8_t frist)
 {
 	char temp[8];
@@ -218,13 +226,85 @@ static void Status_LeaveDetail(void)
 	
 }
 
-
+//显示飞机偏移调节
 static void Status_CopterAdjust(uint8_t frist)
 {
+	static uint8_t adjustDir = 0;	//0 前后	1 左右
+	char temp[8];
+	
 	if(frist)
 	{
 		OLED_ClearGRAM(0);
 		OLED_DrawF6x8String(0, 0, "copterAdjust");
+		OLED_DrawF6x8String(20, 20, "FB:");
+		OLED_DrawF6x8String(80, 20, "LR:");
+		OLED_DrawF6x8String(10, 30, " ");
+		OLED_DrawF6x8String(70, 30, "*");
+	}
+	
+	if(Linking)
+	{
+		sprintf(temp, "%.1f  ", (rpd.FBoffset / 10.0));
+		OLED_DrawF6x8String(20, 30, temp);
+		sprintf(temp, "%.1f  ", (rpd.LRoffset / 10.0));
+		OLED_DrawF6x8String(80, 30, temp);
+		
+		if(rpd.mode & 0x04)
+		{
+			OLED_DrawF6x8String(15, 50, "offset unsaved");
+		}
+		else
+		{
+			OLED_DrawF6x8String(15, 50, " offset saved ");
+		}
+		
+		if(KeyStatus.trigger[2] == 1)
+		{
+			adjustDir = !adjustDir;
+			if(adjustDir)
+			{
+				OLED_DrawF6x8String(10, 30, "*");
+				OLED_DrawF6x8String(70, 30, " ");
+			}
+			else
+			{
+				OLED_DrawF6x8String(10, 30, " ");
+				OLED_DrawF6x8String(70, 30, "*");
+			}
+		}
+		
+		if(adjustDir)
+		{
+			if(KeyStatus.trigger[0] == 1)
+			{
+				EulerAdjustFlag = 1;
+			}
+			else if(KeyStatus.trigger[1] == 1)
+			{
+				EulerAdjustFlag = 2;
+			}
+		}
+		else
+		{
+			if(KeyStatus.trigger[0] == 1)
+			{
+				EulerAdjustFlag = 3;
+			}
+			else if(KeyStatus.trigger[1] == 1)
+			{
+				EulerAdjustFlag = 4;
+			}
+		}
+		
+		if(KeyStatus.trigger[6] == 1)
+		{
+			EulerAdjustFlag = 5;
+		}
+	}
+	else
+	{
+		OLED_DrawF6x8String(20, 30, "-----");
+		OLED_DrawF6x8String(80, 30, "-----");
 	}
 }
 static void Status_LeaveCopterAdjust(void)
@@ -233,6 +313,7 @@ static void Status_LeaveCopterAdjust(void)
 }
 
 
+//摇杆调节
 static void Status_RcokerAdjust(uint8_t frist)
 {
 	static uint32_t Param[4][3];
