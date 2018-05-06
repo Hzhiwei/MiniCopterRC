@@ -56,6 +56,7 @@ void Bluetooth_GetData(ReceiveProtocolDetail *pd);
 
 uint8_t Bluetooth_Init(uint16_t Net);
 void Bluetooth_Send(const SendProtocolDetail *pd);
+HAL_StatusTypeDef Bluetooth_Pair(void);
 
 
 #endif

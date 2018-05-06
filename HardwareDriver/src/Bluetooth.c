@@ -40,10 +40,61 @@ static uint8_t SendBuffer[2 * sizeof(SendProtocolTransmit) + 4];
 static uint8_t ReceiveBuffer[32];
 
 
+static void SendString(char *data);
+
+
 //Bluetooth≥ı ºªØ
 uint8_t Bluetooth_Init(uint16_t Net)
 {
 	return 0;
+}
+
+HAL_StatusTypeDef Bluetooth_Pair(void)
+{
+	osDelay(500);
+	ReceiveBuffer[0] = 0;
+	SendString("AT+DEFAULT");
+	if(HAL_OK != HAL_UART_Receive(&huart1, (uint8_t *)(&ReceiveBuffer), 2, 500))
+	{
+		return HAL_ERROR;
+	}
+	if(ReceiveBuffer[0] != 'O')
+	{
+		return HAL_ERROR;
+	}
+	osDelay(500);
+	ReceiveBuffer[0] = 0;
+	SendString("AT+ROLE=M");
+	if(HAL_OK != HAL_UART_Receive(&huart1, (uint8_t *)(&ReceiveBuffer), 2, 500))
+	{
+		return HAL_ERROR;
+	}
+	if(ReceiveBuffer[0] != 'O')
+	{
+		return HAL_ERROR;
+	}
+	osDelay(500);
+	ReceiveBuffer[0] = 0;
+	SendString("AT+CLEAR");
+	if(HAL_OK != HAL_UART_Receive(&huart1, (uint8_t *)(&ReceiveBuffer), 2, 500))
+	{
+		return HAL_ERROR;
+	}
+	if(ReceiveBuffer[0] != 'O')
+	{
+		return HAL_ERROR;
+	}
+	return HAL_OK;
+}
+
+static void SendString(char *data)
+{
+	uint8_t length = 0;
+	while(*data)
+	{
+		SendBuffer[length++] = *(data++);
+	}
+	HAL_UART_Transmit(&huart1, (uint8_t *)(&SendBuffer), length, 500);
 }
 
 

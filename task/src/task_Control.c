@@ -54,6 +54,43 @@ void task_Control(const void *Parameters)
 	uint16_t lostCounter = LOSTSTOP;
 	
 	uint32_t Offset[4][3] = {0};
+	
+	Key_Update(&KeyStatus);
+	if(KeyStatus.pushed[7] == 0)
+	{
+		OLED_ClearGRAM(0);
+		OLED_DrawF6x8String(15, 20, "Are you sure?");
+		OLED_RefreshGRAM();
+		
+		while(1)
+		{
+			Key_Update(&KeyStatus);
+			if(KeyStatus.trigger[4] == 1)
+			{
+				OLED_ClearGRAM(0);
+				if(HAL_OK == Bluetooth_Pair())
+				{
+					OLED_DrawF6x8String(10, 20, "waiting pair...");
+				}
+				else
+				{
+					OLED_DrawF6x8String(20, 20, "pair failure");
+				}
+				OLED_RefreshGRAM();
+				while(1);
+			}
+			else if((KeyStatus.trigger[0] == 1)
+				|| (KeyStatus.trigger[1] == 1)
+				|| (KeyStatus.trigger[2] == 1)
+				|| (KeyStatus.trigger[3] == 1)
+				|| (KeyStatus.trigger[5] == 1)
+				|| (KeyStatus.trigger[6] == 1)
+				|| (KeyStatus.trigger[7] == 1))
+			{
+				break;
+			}
+		}
+	}
 
 	Bluetooth_Start();
 	
@@ -386,7 +423,7 @@ static void Status_RcokerAdjust(uint8_t frist)
 			OLED_DrawF6x8String(79, 38 + 9 * i, temp);
 		}
 		
-		if(KeyStatus.trigger[5] == 1)
+		if(KeyStatus.trigger[0] == 1)
 		{
 			Flash_Write_Rocker(Param);
 			Rocker_SetOffset(Param);
@@ -398,7 +435,7 @@ static void Status_RcokerAdjust(uint8_t frist)
 		OLED_DrawF6x8String(90, 0, "OK ");
 	}
 	
-	if(KeyStatus.trigger[6] == 1)
+	if(KeyStatus.trigger[1] == 1)
 	{
 		for(uint8_t i = 0; i < 4; ++i)
 		{
@@ -414,4 +451,6 @@ static void Status_LeaveRcokerAdjust(void)
 {
 	
 }
+
+
 
